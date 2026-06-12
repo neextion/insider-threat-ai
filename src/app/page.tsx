@@ -1,65 +1,90 @@
-import Image from "next/image";
+
+"use client";
+import { Users, AlertTriangle, ShieldCheck, Thermometer } from 'lucide-react';
+import { EMPLOYEES, THREAT_EVENTS } from '@/lib/data';
+import { MetricCard } from '@/components/ui/MetricCard';
+import { DataTable } from '@/components/ui/DataTable';
+import { RiskBadge } from '@/components/ui/RiskBadge';
+import { Employee } from '@/lib/types';
+import dynamic from 'next/dynamic';
+import { useRouter } from 'next/navigation';
+
+const ThreatChart = dynamic(() => import('@/components/ui/ThreatChart'), {
+  ssr: false,
+});
 
 export default function Home() {
+  const router = useRouter();
+  const totalEmployees = EMPLOYEES.length;
+  const highRiskEmployees = EMPLOYEES.filter(
+    e => e.riskLevel === 'high' || e.riskLevel === 'critical'
+  ).length;
+  const activeAlerts = EMPLOYEES.reduce((acc, e) => acc + e.flags.length, 0);
+  const threatScore = Math.round(
+    EMPLOYEES.reduce((acc, e) => acc + e.riskScore, 0) / EMPLOYEES.length
+  );
+
+  const columns: { accessor: keyof Employee; header: string; cell?: (value: any) => React.ReactNode }[] = [
+    { accessor: 'name', header: 'Employee' },
+    { accessor: 'riskScore', header: 'Risk Score' },
+    {
+      accessor: 'riskLevel',
+      header: 'Risk Level',
+      cell: (value) => <RiskBadge level={value as "low" | "medium" | "high" | "critical"} />,
+    },
+    { accessor: 'flags', header: 'Flags', cell: (value) => (Array.isArray(value) ? value.length : 0) },
+  ];
+
+  const threatEventsByType = THREAT_EVENTS.reduce((acc, event) => {
+    const eventType = event.type.replace(/_/g, ' ');
+    const existing = acc.find(item => item.name === eventType);
+    if (existing) {
+      existing.value += 1;
+    } else {
+      acc.push({ name: eventType, value: 1 });
+    }
+    return acc;
+  }, [] as { name: string; value: number }[]);
+
+  const threatEventsOverTime = THREAT_EVENTS.reduce((acc, event) => {
+    const eventDate = new Date(event.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const existing = acc.find(item => item.name === eventDate);
+    if (existing) {
+      existing.value += 1;
+    } else {
+      acc.push({ name: eventDate, value: 1 });
+    }
+    return acc;
+  }, [] as { name: string; value: number }[]).sort((a,b) => new Date(a.name).getTime() - new Date(b.name).getTime());
+
+  const handleRowClick = (employee: Employee) => {
+    router.push(`/employee/${employee.id}`);
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="space-y-8">
+        <div className="grid grid-cols-4 gap-6 mb-8">
+            <MetricCard title="Total Employees" value={totalEmployees} icon={Users} trend={{ value: "+5%", direction: "up" }} />
+            <MetricCard title="High Risk Employees" value={highRiskEmployees} icon={AlertTriangle} variant="danger" trend={{ value: "-2%", direction: "down" }} />
+            <MetricCard title="Active Alerts" value={activeAlerts.toString()} icon={ShieldCheck} variant="warning" trend={{ value: "+10%", direction: "up" }} />
+            <MetricCard title="Avg. Threat Score" value={`${threatScore}%`} icon={Thermometer} trend={{ value: "+1.2%", direction: "up" }} />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-primary p-6 rounded-lg shadow-lg">
+                <h2 className="text-xl font-bold mb-4">Threat Events by Type</h2>
+                <ThreatChart data={threatEventsByType} type="pie" />
+            </div>
+            <div className="bg-primary p-6 rounded-lg shadow-lg">
+                <h2 className="text-xl font-bold mb-4">Threat Events Over Time</h2>
+                <ThreatChart data={threatEventsOverTime} type="line" />
+            </div>
         </div>
-      </main>
+
+        <div>
+            <h2 className="text-2xl font-bold mb-4">Employee Risk Overview</h2>
+            <DataTable columns={columns} data={EMPLOYEES} onRowClick={handleRowClick} />
+        </div>
     </div>
   );
 }
