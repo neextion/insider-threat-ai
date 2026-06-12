@@ -22,7 +22,7 @@ export const EmployeeTable = () => {
   });
 
   const handleRowClick = (employee: Employee) => {
-    router.push(`/employee/${employee.id}`);
+    router.push(`/employees/${employee.id}`);
   };
 
   return (
