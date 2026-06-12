@@ -1,21 +1,63 @@
-# Security Dashboard
+
+# Project Blueprint
 
 ## Overview
 
-This application is a dashboard for monitoring and analyzing potential insider threats within a company. It provides a high-level overview of employee risk, active alerts, and threat trends. The dashboard is built with Next.js and uses a variety of modern UI components to create a visually appealing and informative user experience.
+This project is a comprehensive threat intelligence dashboard designed to provide a centralized view of potential security risks within an organization. The dashboard offers a user-friendly interface to monitor employee risk levels, investigate high-risk individuals, analyze threat timelines, and leverage AI-powered analysis for proactive threat detection.
+
+## Style and Design
+
+The application follows a modern and intuitive design language, with a focus on clarity and ease of use. Key design elements include:
+
+*   **Color Palette:** A dark-themed interface with a primary background color, a secondary color for borders and dividers, and accent colors for interactive elements and highlighting.
+*   **Typography:** Clear and legible fonts with a well-defined hierarchy for headings, subheadings, and body text.
+*   **Iconography:** The use of icons to enhance usability and provide visual cues for actions and information.
+*   **Layout:** A responsive and well-structured layout that adapts to different screen sizes, ensuring a seamless experience on both desktop and mobile devices.
 
 ## Features
 
-* **Real-time monitoring:** The dashboard provides real-time updates on employee risk, active alerts, and threat trends.
-* **Visually appealing UI:** The dashboard uses a variety of modern UI components to create a visually appealing and informative user experience.
-* **Detailed employee risk overview:** The dashboard provides a detailed overview of each employee's risk profile, including their risk score, risk level, and active alerts.
-* **Threat event analysis:** The dashboard provides a variety of tools for analyzing threat events, including a threat event timeline and a threat event breakdown by type.
-* **Sidebar Navigation:** A fixed sidebar on the left side of the screen provides easy access to the main sections of the application: Dashboard, Employees, Investigations, Threat Timeline, and AI Analysis. The sidebar has a dark background and uses icons from the `lucide-react` library for a clean and modern look.
+### 1. Main Dashboard
 
-## Design
+*   Provides a high-level overview of the organization's security posture.
+*   Displays key metrics and visualizations, such as the number of high-risk employees, recent threat events, and overall risk trends.
 
-* **Color palette:** The dashboard uses a modern color palette with a mix of dark and light colors. The primary color is a dark blue, which is used for the background and other key UI elements. The secondary color is a light blue, which is used for accents and highlights. The dashboard also uses a variety of other colors to represent different risk levels, such as red for high risk and yellow for medium risk.
-* **Typography:** The dashboard uses a clean and modern font, which is easy to read and understand. The font size is varied to create a visual hierarchy and to draw attention to key information.
-* **Iconography:** The dashboard uses a variety of icons to represent different actions and to provide visual cues to the user. The icons are all from the Lucide icon library, which is a collection of modern and visually appealing icons.
-* **Layout:** The dashboard has a clean and organized layout, which is easy to navigate and understand. The dashboard is divided into several sections, each of which provides a different type of information. The sections are all clearly labeled and are easy to find.
-* **Metric Cards:** The metric cards are arranged in a responsive 4-column grid, which ensures they are properly laid out on all screen sizes. The cards feature a modern design with proper padding (p-6), rounded corners, and a subtle shadow. The default card has a background color of #1e2130 and a border of #2a2f45. The high-risk (danger) card has a #2d1515 background with a #5c2020 border, and the active alerts (warning) card has a #2d2510 background with a #5c4a10 border. Each card prominently displays the value with large, bold text and an icon on the right side. The styling is applied using inline styles to ensure proper rendering.
+### 2. Employee Monitoring
+
+*   A dedicated page to view and manage a list of all employees.
+*   A searchable and filterable table that allows users to quickly find specific employees or groups of employees based on their name, email, or risk level.
+*   The table includes columns for employee name, email, department, risk level, and risk score.
+*   The risk level is visually indicated using a color-coded badge.
+
+### 3. Investigations
+
+*   A specialized view to focus on high-risk employees who require immediate attention.
+*   Displays a list of employees with a "high" or "critical" risk level.
+*   Each list item provides essential employee information, including their name, email, and risk level.
+
+### 4. Threat Timeline
+
+*   A chronological visualization of all threat events that have occurred.
+*   Each event in the timeline includes the date, time, type of threat, and a brief description.
+*   The timeline provides a clear and intuitive way to understand the sequence of events and identify potential patterns or correlations.
+
+### 5. AI-Powered Analysis
+
+*   An advanced feature that leverages mock AI to provide in-depth threat analysis for individual employees.
+*   Users can select an employee from a dropdown menu to initiate the analysis.
+*   The analysis results include a summary of the employee's risk profile, a list of recommended actions, and a confidence score.
+
+## Current Plan and Steps
+
+The following steps have been completed to implement the features described above:
+
+*   Created the main dashboard page with a basic layout.
+*   Implemented the `EmployeeTable` component with search and filtering functionality.
+*   Created the `Input` and `Select` components for the `EmployeeTable`.
+*   Integrated the `EmployeeTable` into the `/employees` page.
+*   Created the `/investigations` page with a list of high-risk employees.
+*   Implemented the `ThreatTimeline` component to display threat events.
+*   Integrated the `ThreatTimeline` into the `/timeline` page.
+*   Created the `AiAnalysis` component for AI-powered threat analysis.
+*   Created the `/api/analyze` API route to provide mock analysis data.
+*   Created the `AnalysisResult` component to display the analysis results.
+*   Integrated the `AiAnalysis` component into the `/ai-analysis` page.

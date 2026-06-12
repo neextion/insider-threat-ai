@@ -64,10 +64,10 @@ export default function Home() {
   return (
     <div className="space-y-8">
         <div className="grid grid-cols-4 gap-6 mb-8">
-            <MetricCard title="Total Employees" value={totalEmployees} icon={Users} trend={{ value: "+5%", direction: "up" }} />
-            <MetricCard title="High Risk Employees" value={highRiskEmployees} icon={AlertTriangle} variant="danger" trend={{ value: "-2%", direction: "down" }} />
-            <MetricCard title="Active Alerts" value={activeAlerts.toString()} icon={ShieldCheck} variant="warning" trend={{ value: "+10%", direction: "up" }} />
-            <MetricCard title="Avg. Threat Score" value={`${threatScore}%`} icon={Thermometer} trend={{ value: "+1.2%", direction: "up" }} />
+            <MetricCard title="Total Employees" value={totalEmployees} icon={Users} />
+            <MetricCard title="High Risk Employees" value={highRiskEmployees} icon={AlertTriangle} variant="danger" />
+            <MetricCard title="Active Alerts" value={activeAlerts.toString()} icon={ShieldCheck} variant="warning" />
+            <MetricCard title="Avg. Threat Score" value={`${threatScore}%`} icon={Thermometer} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

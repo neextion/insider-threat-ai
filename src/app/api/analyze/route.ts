@@ -1,48 +1,36 @@
 
-import { NextResponse } from "next/server";
-import { z } from "zod";
-import { EMPLOYEES } from "@/lib/data";
-
-const requestSchema = z.object({
-  employeeId: z.string(),
-});
+import { NextResponse } from 'next/server';
+import { EMPLOYEES } from '@/lib/data';
+import { faker } from '@faker-js/faker';
 
 export async function POST(request: Request) {
-  const json = await request.json();
-  const parsed = requestSchema.safeParse(json);
+  try {
+    const { employeeId } = await request.json();
 
-  if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error }, { status: 400 });
+    if (!employeeId) {
+      return NextResponse.json({ error: 'Employee ID is required' }, { status: 400 });
+    }
+
+    const employee = EMPLOYEES.find((emp) => emp.id === employeeId);
+
+    if (!employee) {
+      return NextResponse.json({ error: 'Employee not found' }, { status: 404 });
+    }
+
+    // Mock AI analysis
+    const analysis = {
+      riskSummary: `Based on recent activity, ${employee.name} exhibits a ${employee.riskLevel} risk profile. Key factors include ${employee.flags.length} recent threat flags, with the most severe being of type '${employee.flags[0]?.type.replace(/_/g, ' ') || 'N/A'}'. The risk score of ${employee.riskScore} is primarily driven by suspicious patterns in data access and network communication.`,
+      topFlags: employee.flags.slice(0, 3).map(flag => ({ reason: flag.type.replace(/_/g, ' '), description: flag.description })),
+      recommendedActions: [
+        `Immediate review of flags associated with ${employee.name}.`,
+        'Consider a temporary restriction of access to sensitive data pending investigation.',
+        `Schedule a security awareness briefing with ${employee.name} to reinforce company policies.`,
+      ],
+      anomalyExplanation: `The spike in data access requests on ${faker.date.recent().toLocaleDateString()} is anomalous compared to the baseline behavior of this user and their peers.`
+    };
+
+    return NextResponse.json(analysis);
+  } catch (error) {
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
-
-  const { employeeId } = parsed.data;
-  const employee = EMPLOYEES.find((e) => e.id === employeeId);
-
-  if (!employee) {
-    return NextResponse.json({ error: "Employee not found" }, { status: 404 });
-  }
-
-  // This is a placeholder for a real AI-powered risk analysis.
-  // In a real application, you would use a more sophisticated model to generate this data.
-  const riskSummary = `Based on our analysis, ${employee.name} presents a ${employee.riskLevel} risk of being an insider threat. This assessment is based on a risk score of ${employee.riskScore} and the following key factors: recent unusual file access, after-hours activity, and multiple failed login attempts.`;
-
-  const topFlags = employee.flags.map(flag => ({
-    ...flag,
-    description: `This flag was triggered on ${new Date(flag.timestamp).toLocaleString()} due to ${flag.description}.`
-  }));
-
-  const recommendedActions = [
-    "Review recent file access logs for sensitive documents.",
-    "Monitor for further unusual account activity, especially outside of normal working hours.",
-    "Schedule a meeting with the employee to discuss recent activity and security best practices.",
-  ];
-
-  const anomalyExplanation = "The anomaly detection system identified a spike in file downloads and access to confidential project folders, which deviates from the employee's normal behavior patterns. This, combined with login attempts at unusual times, suggests a potential security concern.";
-
-  return NextResponse.json({
-    riskSummary,
-    topFlags,
-    recommendedActions,
-    anomalyExplanation,
-  });
 }

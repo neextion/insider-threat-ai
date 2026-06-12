@@ -1,17 +1,11 @@
 
-import { LucideIcon, TrendingUp, TrendingDown } from 'lucide-react';
+import { LucideIcon } from 'lucide-react';
 import { ReactNode } from 'react';
-
-interface Trend {
-  direction: 'up' | 'down';
-  value: string;
-}
 
 type MetricCardProps = {
   title: string;
   value: ReactNode;
   icon: LucideIcon;
-  trend?: Trend;
   variant?: 'default' | 'danger' | 'warning';
 };
 
@@ -42,11 +36,9 @@ const getCardStyle = (variant: 'default' | 'danger' | 'warning') => {
     }
 };
 
-export const MetricCard = ({ title, value, icon: Icon, trend, variant = 'default' }: MetricCardProps) => {
+export const MetricCard = ({ title, value, icon: Icon, variant = 'default' }: MetricCardProps) => {
   const iconStyles = variantIconClasses[variant];
   const cardStyle = getCardStyle(variant);
-  const TrendIcon = trend?.direction === 'up' ? TrendingUp : TrendingDown;
-  const trendColor = trend?.direction === 'up' ? 'text-success' : 'text-danger';
 
   return (
     <div className="flex flex-col justify-between p-6 rounded-lg shadow-lg" style={cardStyle}>
@@ -58,13 +50,6 @@ export const MetricCard = ({ title, value, icon: Icon, trend, variant = 'default
       </div>
       <div>
         <div className="text-3xl font-bold mt-2 text-text">{value}</div>
-        {trend && (
-          <div className="flex items-center text-sm mt-2">
-            <TrendIcon className={`w-4 h-4 mr-1 ${trendColor}`} />
-            <span className={`${trendColor}`}>{trend.value}</span>
-            <span className="text-text-secondary ml-1">vs last month</span>
-          </div>
-        )}
       </div>
     </div>
   );
