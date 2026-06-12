@@ -7,7 +7,7 @@ import { LayoutDashboard, Users, Search, Activity, Brain } from "lucide-react";
 const navItems = [
   { href: "/", icon: LayoutDashboard, label: "Dashboard" },
   { href: "/employees", icon: Users, label: "Employees" },
-  { href: "/investigate", icon: Search, label: "Investigations" },
+  { href: "/investigations", icon: Search, label: "Investigations" },
   { href: "/timeline", icon: Activity, label: "Threat Timeline" },
   { href: "/ai-analysis", icon: Brain, label: "AI Analysis" },
 ];
